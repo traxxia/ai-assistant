@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { mastra } from './mastra';
 
-// Load env vars
+
 dotenv.config();
 
 const app = express();
