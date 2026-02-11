@@ -10,6 +10,40 @@ export const getAnalysisContextTool = createTool({
   }),
   outputSchema: z.array(z.any()), // flexible output as it returns the raw analysis documents
   execute: async ({ businessId }) => {
+    console.log('[Tool] Triggered: getAnalysisContextTool for businessId:', businessId);
     return await Analysis.getAll(businessId);
+  },
+});
+
+export const getAnalysisByTypeTool = createTool({
+  id: 'get-analysis-by-type',
+  description: 'Get a specific type of analysis for a business. Use this when the user asks for a specific analysis (e.g. SWOT, PESTEL, etc.)',
+  inputSchema: z.object({
+    analysisType: z.enum([
+      'swot',
+      'purchaseCriteria',
+      'loyaltyNPS',
+      'porters',
+      'pestel',
+      'fullSwot',
+      'competitiveAdvantage',
+      'expandedCapability',
+      'strategicRadar',
+      'productivityMetrics',
+      'maturityScore',
+      'competitiveLandscape',
+      'coreAdjacency',
+      'profitabilityAnalysis',
+      'growthTracker',
+      'liquidityEfficiency',
+      'investmentPerformance',
+      'leverageRisk'
+    ]).describe('The specific type of analysis to fetch'),
+    businessId: z.string().describe('The business ID to fetch analysis for'),
+  }),
+  outputSchema: z.any(),
+  execute: async ({ businessId, analysisType }) => {
+    console.log(`[Tool] Triggered: getAnalysisByTypeTool for type: ${analysisType} and businessId: ${businessId}`);
+    return await Analysis.findByType(businessId, analysisType);
   },
 });
