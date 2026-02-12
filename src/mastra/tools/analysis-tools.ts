@@ -47,3 +47,17 @@ export const getAnalysisByTypeTool = createTool({
     return await Analysis.findByType(businessId, analysisType);
   },
 });
+
+export const getAnalysisByPhaseTool = createTool({
+  id: 'get-analysis-by-phase',
+  description: 'Get analysis data filtered by phase (initial, essential, good, advanced).',
+  inputSchema: z.object({
+    phase: z.enum(['initial', 'essential', 'good', 'advanced']).describe('The phase to filter analysis by'),
+    businessId: z.string().describe('The business ID to fetch analysis for'),
+  }),
+  outputSchema: z.any(),
+  execute: async ({ businessId, phase }) => {
+    console.log(`[Tool] Triggered: getAnalysisByPhaseTool for phase: ${phase} and businessId: ${businessId}`);
+    return await Analysis.getByPhase(businessId, phase);
+  },
+});
