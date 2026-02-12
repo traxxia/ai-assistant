@@ -30,7 +30,7 @@ export const analysisAgent = new Agent({
           - Format the names to be human-readable (e.g., "swot" -> "SWOT Analysis", "purchaseCriteria" -> "Purchase Criteria", "loyaltyNPS" -> "Loyalty & NPS").
           - Do NOT show raw camelCase strings.
 `,
-  model: 'groq/gpt-oss-120b', //LLM model
+  model: 'groq/llama-3.3-70b-versatile', //LLM model
   tools: { getAnalysisContextTool, getAnalysisByTypeTool, getAnalysisByPhaseTool, getProjectsTool },
   memory: new Memory(),
 });
