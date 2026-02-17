@@ -44,7 +44,11 @@ export const getAnalysisByTypeTool = createTool({
   outputSchema: z.any(),
   execute: async ({ businessId, analysisType }) => {
     console.log(`[Tool] Triggered: getAnalysisByTypeTool for type: ${analysisType} and businessId: ${businessId}`);
-    return await Analysis.findByType(businessId, analysisType);
+    const data = await Analysis.findByType(businessId, analysisType);
+    if (!data) {
+        return { error: `Requested analysis type '${analysisType}' is not available.` };
+    }
+    return data;
   },
 });
 
@@ -58,6 +62,10 @@ export const getAnalysisByPhaseTool = createTool({
   outputSchema: z.any(),
   execute: async ({ businessId, phase }) => {
     console.log(`[Tool] Triggered: getAnalysisByPhaseTool for phase: ${phase} and businessId: ${businessId}`);
-    return await Analysis.getByPhase(businessId, phase);
+    const data = await Analysis.getByPhase(businessId, phase);
+    if (!data || data.length === 0) {
+        return { message: `No analysis found for phase '${phase}'.` };
+    }
+    return data;
   },
 });
