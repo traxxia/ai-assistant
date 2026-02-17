@@ -1,7 +1,7 @@
 import { Agent } from '@mastra/core/agent';
 import { Memory } from '@mastra/memory';
 import { getAnalysisContextTool, getAnalysisByTypeTool, getAnalysisByPhaseTool } from '../tools/analysis-tools';
-import { getProjectsTool } from '../tools/project-tools';
+import { getProjectsTool, getAnswerProjectTool } from '../tools/project-tools';
 
 export const analysisAgent = new Agent({
   id: 'analysis-agent',
@@ -20,10 +20,12 @@ export const analysisAgent = new Agent({
           - Call "get-projects" to get the project details.
           - Call "get-analysis-context" (or specific type) to get business context.
           - Synthesize the data to provide specific, actionable suggestions for the project.
-      7. If the tool returns data, present it clearly to the user.
-      8. If no data is found, inform the user politely.
-      9. NEVER mention the "Business ID" or "ID" in your response to the user. It is internal system information.
-      10. When listing available analyses, ALWAYS:
+      7. If the user asks a question about a SPECIFIC project (and provides a projectId or you know it from context), use "get-answer-project".
+          - You can pass an optional "analysisType" if the user's question relates to a specific analysis (e.g., 'How does SWOT affect this project?').
+      8. If the tool returns data, present it clearly to the user.
+      9. If the tool returns a "message" or "error" field (e.g., "Data not available"), YOU MUST relay that message to the user given in the tool output. Do not return an empty response.
+      10. NEVER mention the "Business ID" or "ID" in your response to the user. It is internal system information.
+      11. When listing available analyses, ALWAYS:
           - Call the "get-analysis-context" tool to fetch all available analyses.
           - Extract the list from the "analysis_type" field of the returned documents.
           - ONLY list the analyses present in the actual returned data. Do NOT hallucinate types.
@@ -31,6 +33,6 @@ export const analysisAgent = new Agent({
           - Do NOT show raw camelCase strings.
 `,
   model: 'groq/llama-3.3-70b-versatile', //LLM model
-  tools: { getAnalysisContextTool, getAnalysisByTypeTool, getAnalysisByPhaseTool, getProjectsTool },
+  tools: { getAnalysisContextTool, getAnalysisByTypeTool, getAnalysisByPhaseTool, getProjectsTool, getAnswerProjectTool },
   memory: new Memory(),
 });
