@@ -1,10 +1,10 @@
+import dotenv from 'dotenv';
+dotenv.config({ override: true }); // Force override system env vars
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { mastra } from './mastra';
 
-
-dotenv.config();
+console.log('Loaded GROQ_API_KEY:', process.env.GROQ_API_KEY?.substring(0, 10) + '...');
 
 const app = express();
 const PORT = process.env.PORT || 4111;
@@ -38,6 +38,8 @@ app.post('/api/chat', async (req, res) => {
 
     const agent = mastra.getAgent('analysisAgent');
     const result = await agent.generate(propmtWithContext);
+
+    console.log('[AI Response]:', result.text);
 
     // Return the text response
     return res.json({ response: result.text });
