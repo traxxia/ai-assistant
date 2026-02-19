@@ -11,28 +11,35 @@ export const analysisAgent = new Agent({
       Your primary goal is to fetch and present analysis data for a specific business.
       
       When asked for analysis, a summary, or context about the business:
-      1. If the user asks for a general summary, use the "get-analysis-context" tool.
-      2. If the user asks for a specific analysis (e.g., SWOT, PESTEL, etc.), use the "get-analysis-by-type" tool with the correct type.
-      3. If the user asks for a specific PHASE (initial, essential, good, advanced), use the "get-analysis-by-phase" tool with the correct phase.
-      4. If the user asks for MULTIPLE analyses (e.g., "SWOT and PESTEL"), call the "get-analysis-by-type" tool MULTIPLE times (once for each type).
-      5. If the user asks about PROJECTS, initiatives, or strategic plans, use the "get-projects" tool.
+      1. If the user asks for a general summary, use the "getAnalysisContext" tool.
+      2. If the user asks for a specific analysis (e.g., SWOT, PESTEL, etc.), use the "getAnalysisByType" tool with the correct type.
+      3. If the user asks for a specific PHASE (initial, essential, good, advanced), use the "getAnalysisByPhase" tool with the correct phase.
+      4. If the user asks for MULTIPLE analyses (e.g., "SWOT and PESTEL"), call the "getAnalysisByType" tool MULTIPLE times (once for each type).
+      5. If the user asks about PROJECTS, initiatives, or strategic plans, use the "getProjects" tool.
       6. If the user asks for SUGGESTIONS to improve a project based on analysis:
-          - Call "get-projects" to get the project details.
-          - Call "get-analysis-context" (or specific type) to get business context.
+          - Call "getProjects" to get the project details.
+          - Call "getAnalysisContext" (or specific type) to get business context.
           - Synthesize the data to provide specific, actionable suggestions for the project.
-      7. If the user asks a question about a SPECIFIC project (and provides a projectId or you know it from context), use "get-answer-project".
+      7. If the user asks a question about a SPECIFIC project (and provides a projectId or you know it from context), use "getAnswerProject".
           - You can pass an optional "analysisType" if the user's question relates to a specific analysis (e.g., 'How does SWOT affect this project?').
       8. If the tool returns data, present it clearly to the user.
       9. If the tool returns a "message" or "error" field (e.g., "Data not available"), YOU MUST relay that message to the user given in the tool output. Do not return an empty response.
       10. NEVER mention the "Business ID" or "ID" in your response to the user. It is internal system information.
       11. When listing available analyses, ALWAYS:
-          - Call the "get-analysis-context" tool to fetch all available analyses.
+          - Call the "getAnalysisContext" tool to fetch all available analyses.
           - Extract the list from the "analysis_type" field of the returned documents.
           - ONLY list the analyses present in the actual returned data. Do NOT hallucinate types.
           - Format the names to be human-readable (e.g., "swot" -> "SWOT Analysis", "purchaseCriteria" -> "Purchase Criteria", "loyaltyNPS" -> "Loyalty & NPS").
           - Do NOT show raw camelCase strings.
 `,
-  model: 'groq/llama-3.3-70b-versatile', //LLM model
-  tools: { getAnalysisContextTool, getAnalysisByTypeTool, getAnalysisByPhaseTool, getProjectsTool, getAnswerProjectTool },
+  model: 'openai/gpt-5-nano', //LLM model
+// model: 'groq/llama-3.3-70b-versatile',
+  tools: { 
+    getAnalysisContext: getAnalysisContextTool, 
+    getAnalysisByType: getAnalysisByTypeTool, 
+    getAnalysisByPhase: getAnalysisByPhaseTool, 
+    getProjects: getProjectsTool, 
+    getAnswerProject: getAnswerProjectTool 
+  },
   memory: new Memory(),
 });
