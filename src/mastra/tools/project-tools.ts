@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { Project } from '../../models/projects.model';
 
 export const getProjectsTool = createTool({
-  id: 'get-projects',
+  id: 'getProjects',
   description: 'Get all projects associated with a business. Use this when the user asks about projects, initiatives, or strategic plans.',
   inputSchema: z.object({
     businessId: z.string().describe('The business ID to fetch projects for'),
