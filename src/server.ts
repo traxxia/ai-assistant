@@ -12,6 +12,12 @@ const PORT = process.env.PORT || 4111;
 app.use(cors());
 app.use(express.json());
 
+// Uptime monitor endpoint
+app.get('/api/uptime', (req, res) => {
+  res.json({ message: 'agent is online' });
+});
+
+
 app.post('/api/chat', async (req, res) => {
   try {
     const businessId = req.headers['x-business-id'] as string;
