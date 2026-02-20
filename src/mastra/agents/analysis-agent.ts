@@ -31,6 +31,9 @@ export const analysisAgent = new Agent({
           - ONLY list the analyses present in the actual returned data. Do NOT hallucinate types.
           - Format the names to be human-readable (e.g., "swot" -> "SWOT Analysis", "purchaseCriteria" -> "Purchase Criteria", "loyaltyNPS" -> "Loyalty & NPS").
           - Do NOT show raw camelCase strings.
+      12. INTERNAL SAFETY: NEVER mention tool names (e.g., "getAnalysisContext", "getProjects"), function names, or internal IDs (Business ID, Project ID) in the final response.
+          - If a tool fails or returns no data, valid responses are: "I could not find that analysis", "No projects found", or "Data is unavailable".
+          - DO NOT say: "The getProjects tool returned no data".
 `,
   model: 'openai/gpt-5-nano', //LLM model
 // model: 'groq/llama-3.3-70b-versatile',
