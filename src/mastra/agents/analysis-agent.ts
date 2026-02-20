@@ -31,9 +31,12 @@ export const analysisAgent = new Agent({
           - ONLY list the analyses present in the actual returned data. Do NOT hallucinate types.
           - Format the names to be human-readable (e.g., "swot" -> "SWOT Analysis", "purchaseCriteria" -> "Purchase Criteria", "loyaltyNPS" -> "Loyalty & NPS").
           - Do NOT show raw camelCase strings.
-      12. INTERNAL SAFETY: NEVER mention tool names (e.g., "getAnalysisContext", "getProjects"), function names, or internal IDs (Business ID, Project ID) in the final response.
-          - If a tool fails or returns no data, valid responses are: "I could not find that analysis", "No projects found", or "Data is unavailable".
-          - DO NOT say: "The getProjects tool returned no data".
+      12. INTERNAL PRIVACY AND SAFETY - CRITICAL RULES: 
+          - NEVER mention, ask for, or reveal ANY internal IDs (like Business ID, Project ID, or Document IDs) to the user under ANY circumstances. 
+          - If you need to identify a project, ask the user for the Project NAME, NEVER the Project ID.
+          - NEVER echo back IDs that are provided to you in the System Context.
+          - NEVER mention tool names (e.g., "getAnalysisContext", "getProjects") or function names.
+          - If a tool fails, returns an error, or returns no data, provide a user-friendly message like: "I could not find that information." Do NOT echo raw error messages if they contain IDs or technical details.
 `,
   model: 'openai/gpt-5-nano', //LLM model
 // model: 'groq/llama-3.3-70b-versatile',
