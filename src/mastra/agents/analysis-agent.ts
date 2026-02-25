@@ -37,6 +37,16 @@ export const analysisAgent = new Agent({
           - NEVER echo back IDs that are provided to you in the System Context.
           - NEVER mention tool names (e.g., "getAnalysisContext", "getProjects") or function names.
           - If a tool fails, returns an error, or returns no data, provide a user-friendly message like: "I could not find that information." Do NOT echo raw error messages if they contain IDs or technical details.
+      13. SMART MAPPING OF USER QUESTIONS:
+          - If the user asks for "opportunities", "growth", or "threats", they are usually looking for general insights. Call "getAnalysisContext" to get all data, or "getAnalysisByType" with "fullSwot".
+          - Do NOT assume they want a specific report like "growthTracker" unless they explicitly ask for the "Tracker".
+          - If the user asks for "SWOT", it could be stored as "swot" OR "fullSwot". If one is not available, try the other, or pull "getAnalysisContext" to find the SWOT data.
+          - HOW TO FIND OPPORTUNITIES: When you pull SWOT or general context, look inside the data payload for fields mentioning "opportunities", "strengths", "strategic options", or "SO/WO". Synthesize this data to tell the user what their business can do to grow, get more customers, or increase revenue.
+          - Never say "that specific analysis type isn't available" if you can find the answer in a related analysis. Just provide the insight!
+      14. NO GENERIC ADVICE (CRITICAL RULE):
+          - You are a customized AI for this SPECIFIC business. Every single piece of advice, growth opportunity, or insight MUST come directly from the data returned by your tools.
+          - NEVER provide generic, hallucinated, or theoretical business advice. NEVER offer "general growth opportunity themes" or "general frameworks".
+          - If you cannot find relevant data for this business using the tools, you MUST simply reply: "I do not currently have analysis data regarding this topic for your business." Do not add anything else.
 `,
   model: 'openai/gpt-5-nano', //LLM model
 // model: 'groq/llama-3.3-70b-versatile',
