@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config({ override: true }); // Force override system env vars
+dotenv.config({ override: true });
 import express from 'express';
 import cors from 'cors';
 import { mastra } from './mastra';
@@ -11,6 +11,12 @@ const PORT = process.env.PORT || 4111;
 
 app.use(cors());
 app.use(express.json());
+
+// Uptime monitor endpoint
+app.get('/api/uptime', (req, res) => {
+  res.json({ message: 'agent is online' });
+});
+
 
 app.post('/api/chat', async (req, res) => {
   try {
@@ -39,10 +45,21 @@ app.post('/api/chat', async (req, res) => {
     const agent = mastra.getAgent('analysisAgent');
     const result = await agent.generate(propmtWithContext);
 
-    console.log('[AI Response]:', result.text);
+    // Layer 2: Output Sanitization (Regex masking)
+    let finalResponse = result.text;
+    // Redact 24-char hex strings (MongoDB IDs)
+    finalResponse = finalResponse.replace(/\b[0-9a-fA-F]{24}\b/g, '[REDACTED]');
+    // Redact internal tool names
+    finalResponse = finalResponse.replace(/\b(getAnalysisContext|getAnalysisByType|getAnalysisByPhase|getProjects|getAnswerProject)\b/ig, '[Internal Tool]');
 
-    // Return the text response
-    return res.json({ response: result.text });
+    console.log('[AI Response]:', finalResponse);
+    console.log('[AI Usage]:', result.usage);
+
+    // Return the text response and token usage
+    return res.json({ 
+      response: finalResponse,
+      usage: result.usage || { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
+    });
 
   } catch (error: any) {
     console.error('Error processing request:', error);
