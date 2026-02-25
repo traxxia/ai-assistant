@@ -2,6 +2,26 @@ import { createTool } from '@mastra/core/tools';
 import { z } from 'zod';
 import { Project } from '../../models/projects.model';
 
+// Helper to strip internal DB fields before passing to the LLM
+const sanitizeData = (data: any | any[]) => {
+  if (!data) return data;
+  if (Array.isArray(data)) return data.map(item => sanitizeItem(item));
+  return sanitizeItem(data);
+};
+
+const sanitizeItem = (item: any) => {
+  if (!item) return item;
+  // Deep clone to ensure we aren't mutating mongoose docs and can delete keys
+  const clean = JSON.parse(JSON.stringify(item));
+  delete clean._id;
+  delete clean.business_id;
+  delete clean.user_id;
+  delete clean.created_at;
+  delete clean.updated_at;
+  delete clean.__v;
+  return clean;
+};
+
 export const getProjectsTool = createTool({
   id: 'getProjects',
   description: 'Get all projects associated with a business. Use this when the user asks about projects, initiatives, or strategic plans.',
@@ -15,7 +35,7 @@ export const getProjectsTool = createTool({
     if (!projects || projects.length === 0) {
         return { message: "No projects found for this business." };
     }
-    return projects;
+    return sanitizeData(projects);
   },
 });
 
@@ -56,15 +76,15 @@ export const getAnswerProjectTool = createTool({
 
       if (analysisType && !analysisData) {
          return {
-            project,
+            project: sanitizeData(project),
             analysis: null,
             message: `Project data found, but '${analysisType}' analysis is not available.`
          };
       }
 
       return {
-        project,
-        analysis: analysisData,
+        project: sanitizeData(project),
+        analysis: sanitizeData(analysisData),
       };
     } catch (error: any) {
       console.error('[Tool] Error in getAnswerProjectTool:', error);

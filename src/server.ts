@@ -45,12 +45,19 @@ app.post('/api/chat', async (req, res) => {
     const agent = mastra.getAgent('analysisAgent');
     const result = await agent.generate(propmtWithContext);
 
-    console.log('[AI Response]:', result.text);
+    // Layer 2: Output Sanitization (Regex masking)
+    let finalResponse = result.text;
+    // Redact 24-char hex strings (MongoDB IDs)
+    finalResponse = finalResponse.replace(/\b[0-9a-fA-F]{24}\b/g, '[REDACTED]');
+    // Redact internal tool names
+    finalResponse = finalResponse.replace(/\b(getAnalysisContext|getAnalysisByType|getAnalysisByPhase|getProjects|getAnswerProject)\b/ig, '[Internal Tool]');
+
+    console.log('[AI Response]:', finalResponse);
     console.log('[AI Usage]:', result.usage);
 
     // Return the text response and token usage
     return res.json({ 
-      response: result.text,
+      response: finalResponse,
       usage: result.usage || { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
     });
 
