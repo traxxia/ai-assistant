@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config({ override: true }); // Force override system env vars
+dotenv.config({ override: true });
 import express from 'express';
 import cors from 'cors';
 import { mastra } from './mastra';
@@ -46,9 +46,13 @@ app.post('/api/chat', async (req, res) => {
     const result = await agent.generate(propmtWithContext);
 
     console.log('[AI Response]:', result.text);
+    console.log('[AI Usage]:', result.usage);
 
-    // Return the text response
-    return res.json({ response: result.text });
+    // Return the text response and token usage
+    return res.json({ 
+      response: result.text,
+      usage: result.usage || { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
+    });
 
   } catch (error: any) {
     console.error('Error processing request:', error);
