@@ -21,7 +21,7 @@ app.get('/api/uptime', (req, res) => {
 app.post('/api/chat', async (req, res) => {
   try {
     const businessId = req.headers['x-business-id'] as string;
-    const { message, projectId } = req.body;
+    const { message, projectId, current_page, page_description, page_content } = req.body;
 
     if (!businessId) {
       return res.status(400).json({ error: 'Missing x-business-id header' });
@@ -36,6 +36,18 @@ app.post('/api/chat', async (req, res) => {
     
     if (projectId) {
       systemContext += `\n[System Context]: The user is asking about a SPECIFIC Project with ID "${projectId}". Use this "projectId" for the "get-answer-project" tool.`;
+    }
+
+    if (current_page) {
+      systemContext += `\n[System Context: Current Page]: The user is currently viewing the "${current_page}" page.`;
+    }
+
+    if (page_description) {
+      systemContext += `\n[System Context: Page Description]: ${page_description}`;
+    }
+
+    if (page_content) {
+      systemContext += `\n[System Context: Page Content]: ${typeof page_content === 'object' ? JSON.stringify(page_content) : page_content}`;
     }
 
     const propmtWithContext = `${message}\n\n${systemContext}`;
