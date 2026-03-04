@@ -106,3 +106,45 @@ export const getAnalysisByPhaseTool = createTool({
     return sanitizeData(data);
   },
 });
+
+export const getPmfAnalysisTool = createTool({
+  id: 'get-pmf-analysis',
+  description: 'Get the Product-Market-Fit (PMF) Analysis or AHA insights for the business. Use this tool when the user asks anything about PMF Analysis, AHA insights, or needs suggestions regarding Product-Market-Fit.',
+  inputSchema: z.object({
+    businessId: z.string().describe('The business ID to fetch PMF analysis for'),
+  }),
+  outputSchema: z.any(),
+  execute: async ({ businessId }) => {
+    console.log(`[Tool] Triggered: getPmfAnalysisTool for businessId: ${businessId}`);
+    
+    // Fetch only the detailed analysis insights
+    const pmfData = await import('../../models/pmfAnalysis.model').then(m => m.PmfAnalysis.getByBusinessId(businessId));
+    
+    if (!pmfData) {
+      return { message: `No PMF Analysis or AHA Insights found for this business.` };
+    }
+
+    return sanitizeData(pmfData);
+  }
+});
+
+export const getPmfExecutiveSummaryTool = createTool({
+  id: 'get-pmf-executive-summary',
+  description: 'Get the PMF Executive Summary (Product-Market-Fit Executive Summary) for the business. Use this tool when the user asks for the executive summary, new adjacencies, competitive levers, or PMF top priorities.',
+  inputSchema: z.object({
+    businessId: z.string().describe('The business ID to fetch PMF executive summary for'),
+  }),
+  outputSchema: z.any(),
+  execute: async ({ businessId }) => {
+    console.log(`[Tool] Triggered: getPmfExecutiveSummaryTool for businessId: ${businessId}`);
+    
+    // Fetch only the executive summary
+    const executiveSummaryData = await import('../../models/pmf_executive_summaries.model').then(m => m.PmfExecutiveSummary.getByBusinessId(businessId));
+    
+    if (!executiveSummaryData) {
+      return { message: `No PMF Executive Summary found for this business.` };
+    }
+
+    return sanitizeData(executiveSummaryData);
+  }
+});
