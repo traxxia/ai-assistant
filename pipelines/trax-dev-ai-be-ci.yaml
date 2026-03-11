@@ -7,13 +7,13 @@ trigger:
   branches:
     include:
       - main
-      - deployment
+      - develop
 
 pr:
   branches:
     include:
       - main
-      - deployment
+      - develop
 
 # ─────────────────────────────────────────
 # Variables
