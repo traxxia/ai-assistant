@@ -5,7 +5,7 @@ WORKDIR /app
 
 # Copy package files and install all dependencies (including dev)
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm install
 
 # Copy source and build
 COPY . .
@@ -20,7 +20,7 @@ ENV NODE_ENV=production
 
 # Copy package files and install production dependencies only
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev
+RUN npm install --omit=dev
 
 # Copy built output from builder stage
 COPY --from=builder /app/.mastra/output ./.mastra/output
