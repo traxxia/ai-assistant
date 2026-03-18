@@ -9,7 +9,10 @@ console.log('Loaded GROQ_API_KEY:', process.env.GROQ_API_KEY?.substring(0, 10) +
 const app = express();
 const PORT = process.env.PORT || 4111;
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-business-id']
+}));
 app.use(express.json());
 
 // Uptime monitor endpoint
