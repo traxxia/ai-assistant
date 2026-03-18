@@ -9,7 +9,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install production dependencies only
-RUN npm i --omit=dev
+RUN npm i --omit=dev && npm i -g tsx
 
 # Copy source code
 COPY src ./src
@@ -22,4 +22,4 @@ EXPOSE 4111
 ENV PORT=4111
 
 # Start the server
-CMD ["npm", "run", "start:server"]
+CMD ["tsx", "src/server.ts"]
