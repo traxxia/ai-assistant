@@ -15,7 +15,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization', 'x-business-id', 'X-Business-Id', 'x-requested-with', 'Accept', 'Origin'],
   credentials: true
 }));
-app.options('*', cors());
+app.options('/api/chat', cors());
 app.use(express.json());
 
 // Uptime monitor endpoint
