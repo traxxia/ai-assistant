@@ -1,30 +1,25 @@
-# ---- Build Stage ----
-FROM node:22-alpine AS builder
+# ─────────────────────────────────────────
+# Stage 2: Runtime
+# ─────────────────────────────────────────
+FROM node:22-alpine 
 
 WORKDIR /app
 
-# Copy package files and install all dependencies (including dev)
-COPY package.json package-lock.json ./
-RUN npm install
+# Only copy production deps manifest
+COPY package*.json ./
 
-# Copy source and build
-COPY . .
-RUN npm run build
+# Install production dependencies only
+RUN npm i --omit=dev
 
-# ---- Production Stage ----
-FROM node:22-alpine AS production
+# Copy source code
+COPY src ./src
 
-WORKDIR /app
-
-ENV NODE_ENV=production
-
-# Copy package files and install production dependencies only
-COPY package.json package-lock.json ./
-RUN npm install --omit=dev
-
-# Copy built output from builder stage
-COPY --from=builder /app/.mastra/output ./.mastra/output
-
+# Expose the app port
 EXPOSE 4111
 
-CMD ["node", ".mastra/output/index.mjs"]
+# Environment variables (overridden at runtime via Azure App Settings / Container Apps env)
+# ENV NODE_ENV=production
+ENV PORT=4111
+
+# Start the server
+CMD ["npm", "run", "start:server"]
