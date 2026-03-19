@@ -9,7 +9,13 @@ console.log('Loaded GROQ_API_KEY:', process.env.GROQ_API_KEY?.substring(0, 10) +
 const app = express();
 const PORT = process.env.PORT || 4111;
 
-app.use(cors());
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-business-id', 'X-Business-Id', 'x-requested-with', 'Accept', 'Origin'],
+  credentials: true
+}));
+app.options('/api/chat', cors());
 app.use(express.json());
 
 // Uptime monitor endpoint
@@ -33,7 +39,7 @@ app.post('/api/chat', async (req, res) => {
 
     // Construct prompt with context
     let systemContext = `[System Context]: The Business ID is "${businessId}". Use this ID for any tool calls.`;
-    
+
     if (projectId) {
       systemContext += `\n[System Context]: The user is asking about a SPECIFIC Project with ID "${projectId}". Use this "projectId" for the "get-answer-project" tool.`;
     }
@@ -68,7 +74,7 @@ app.post('/api/chat', async (req, res) => {
     console.log('[AI Usage]:', result.usage);
 
     // Return the text response and token usage
-    return res.json({ 
+    return res.json({
       response: finalResponse,
       usage: result.usage || { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
     });
@@ -87,24 +93,24 @@ const server = app.listen(PORT, () => {
 
 // Handle graceful shutdown
 const shutdown = () => {
-    console.log('Shutting down server...');
-    server.close(() => {
-        console.log('Server closed.');
-        process.exit(0);
-    });
-    
-    // Force close if it takes too long
-    setTimeout(() => {
-        console.error('Forcing shutdown...');
-        process.exit(1);
-    }, 10000);
+  console.log('Shutting down server...');
+  server.close(() => {
+    console.log('Server closed.');
+    process.exit(0);
+  });
+
+  // Force close if it takes too long
+  setTimeout(() => {
+    console.error('Forcing shutdown...');
+    process.exit(1);
+  }, 10000);
 };
 
 process.on('SIGINT', shutdown);
 process.on('SIGTERM', shutdown);
 
 // Keep process alive explicitly (workaround for premature exit in some environments)
-setInterval(() => {}, 1000 * 60 * 60);
+setInterval(() => { }, 1000 * 60 * 60);
 
 process.stdin.resume();
 
