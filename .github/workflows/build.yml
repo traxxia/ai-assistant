@@ -3,10 +3,10 @@ name: CI Build
 on:
   push:
     branches:
-      - main
+      - deployment
   pull_request:
     branches:
-      - main
+      - deployment
 
 env:
   IMAGE_NAME: traxxia-ai-assistant
