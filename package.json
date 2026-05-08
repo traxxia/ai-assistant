@@ -29,6 +29,7 @@
     "express": "^5.2.1",
     "mongoose": "^9.2.0",
     "openai": "^6.22.0",
+    "tsx": "^4.21.0",
     "zod": "^4.3.6"
   },
   "devDependencies": {
@@ -36,7 +37,6 @@
     "@types/express": "^5.0.6",
     "@types/node": "^25.2.0",
     "mastra": "^1.2.0",
-    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }

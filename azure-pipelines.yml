@@ -1,0 +1,20 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Root Azure Pipelines Entry Point — Traxxia AI Assistant
+#
+# Azure DevOps looks for this file by default.
+# It delegates to the CI pipeline in /pipelines/ci.yml.
+#
+# ── How to use ───────────────────────────────────────────────────────────────
+# 1. In Azure DevOps → Pipelines → New Pipeline
+# 2. Select your repo and point to this file (azure-pipelines.yml)
+# 3. The CI stage (build + push to ACR) runs on: main, develop
+# ─────────────────────────────────────────────────────────────────────────────
+
+trigger:
+  branches:
+    include:
+      - main
+      - deployment
+
+extends:
+  template: pipelines/ci.yml
