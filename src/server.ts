@@ -137,9 +137,11 @@ Regardless of the current page, if the user explicitly asks for certain things:
     console.log('[AI Usage]:', result.usage);
 
     // Return the text response and token usage
+    const modelId: string = (agent as any).model ?? 'unknown';
     return res.json({
       response: finalResponse,
       systemPrompt: systemContext,
+      model: modelId,
       usage: result.usage || { promptTokens: 0, completionTokens: 0, totalTokens: 0 }
     });
 
